@@ -43,11 +43,62 @@ topLayerWidth | layer width for the top of your cylinder (gradient from endZ to 
 # Partition file
 
 a partition file is a txt file with 18 lines (for 18 tones).
-Each line is composed of multiple segments of 8 notes separated by a vertical bar |--------|--------|
-A hyphen - is used when the note is not played, and a X is used when the note is played.
-Before the first vertical bar |, you can add text such as the name of the corresponding note (ex: B5#|----X---|).
+Each line is composed of multiple segments of 8 notes separated by a vertical bar |--------|--------|--------|  
+A hyphen - is used when the note is not played, and a X is used when the note is played.  
+Before the first vertical bar |, you can add text such as the name of the corresponding tone (ex: B5#|----X---|).  
  
+# STL generation script
+In cylinderGeneratorSTL.py, you can generate a STL file for your partition :
+First, you need to load your partition file :
+``` python
+partition = musicBoxMaker.parsePartitionFile("yourPartition.txt")
+``` 
+Then, you generate the list of triangles using the function musicBoxMaker.generateTriangleList. See the parameters description in the section "Parameter list".  
+Finally, you can generate the STL file using :  
+``` python
+musicBoxMaker.saveToSTL("yourFile.stl", listTri)
+``` 
+
+For better control of the print, it is recommended to generate the GCODE instead.
 
 # Generate your prefix and suffix gcode
 
-You should first use your favorite slicing software to generate the gcode corresponding to any object.
+To generate the GCODE of your cylinder, you will need to provide a prefix and suffix GCODE (code executed before and after the print of the cylinder), and the start extrusion value (the extrusion value just after the prefix).  
+To obtain these, I recommend you to generate a STL and slice it with your favorite slicer configured for your 3D printer (in my case, I used CURA).  
+Then, you open the generated GCODE with a text editor and you search for the beginning of the print.
+If you use CURA, you should search for comments such as `;MESH:yourFile.stl`, followed by a few G0 commands, followed by `;TYPE:WALL-OUTER` followed by a G1 command similar to `G1 F2700 E10.71106`. If you find it, copy that into a prefix.gcode file. The 'E' value (in this example, 10.71106) is the value you should specify for the parameter `start_extrusion_val`.  
+For the suffix, search for the commend `;TIME_ELAPSED:` and copy from the G0 command just before (example: `G0 F12000 X109.984 Y116.489`) until the end of the file.
+You can find example of prefix and suffix GCODE in this project files, but DO NOT USE THEM if you have a different printer than an ender 5 or if you print with different filament than PLA. You should generate your own one adapted for your printer, and watch carefully for the first use.
+
+# GCODE generation script
+
+In the cylinderGeneratorGCODE.py script, you can generate the GCODE by modifying these lines :
+
+You should set your own prefix and suffix gcode in these lines :
+```python
+with open ("prefix.gcode", "r") as myfile:
+    prefix=str(myfile.read())
+with open ("suffix.gcode", "r") as myfile:
+    suffix=str(myfile.read())
+```
+Check the previous section for explanation. USE ONLY a prefix and suffix adapted to your printer.
+ 
+Then, you can load the partition by modifying this line :  
+``` python
+partition = musicBoxMaker.parsePartitionFile("yourPartition.txt")
+``` 
+
+Adjust the generation parameters on the function musicBoxMaker.generateGCODE
+
+And save the result :
+``` python
+with open("result_cylinder.gcode", "w") as myfile:
+    print("saving...")
+    myfile.write(gcode)
+    print("Done!!!")
+``` 
+
+# Disclaimer
+Be careful when using the GCODE for the first time, please watch it to be sure that everything works properly.  
+Before the first run, you can visualize your GCODE with a viewer such as https://gcode.ws/  
+Make sure you set properly the prefix, suffix, start_extrusion_val, center, and all the other parameters to values that are compatible to your printer.
