@@ -3,13 +3,14 @@
 This code allows to generate the GCODE for custom music box cylinder.
 Please check the video first : (soon)
 
-Most of the code is in the musicBoxMaker.py file, but you don't need to modify it to generate your music box cylinder.
-It's possible to generate STL file or GCODE directly. STL may be usable if your printer is well calibrated, but generating the GCODE is recommended.
+The main part of the code is in the file musicBoxMaker.py which contains the cylinder generation and partition loading.
+To generate a STL or GCODE, you should adapt and execute cylinderGeneratorSTL.py or cylinderGeneratorGCODE.py
+It's recommended to use the GCODE generation instead of the STL, but the STL may be usable if your printer is well calibrated.
 
 # Run the scripts
 
-You need to install python with the modules numpy, pydub, simpleaudio.
-On windows, you may need visualc++ build tools.
+To run the scripts, you need to install python with the modules numpy, pydub, and simpleaudio.
+On windows, you may need to install visualc++ build tools to solve some errors.
 
 There are 3 scripts that you can modify and use : 
 * play_partition.py, to play a partition file using your recorded notes
@@ -39,6 +40,13 @@ mainLayerWidth | layer width for the main part of your cylinder
 bottomLayerWidth | layer width for the bottom of your cylinder (gradient until 0 to startZ). Adjust it to fit the plastic bottom plastic cap.
 topLayerWidth | layer width for the top of your cylinder (gradient from endZ to height). Adjust it to fit the plastic top plastic cap.
 
+# Partition file
+
+a partition file is a txt file with 18 lines (for 18 tones).
+Each line is composed of multiple segments of 8 notes separated by a vertical bar |--------|--------|
+A hyphen - is used when the note is not played, and a X is used when the note is played.
+Before the first vertical bar |, you can add text such as the name of the corresponding note (ex: B5#|----X---|).
+ 
 
 # Generate your prefix and suffix gcode
 
