@@ -1,7 +1,8 @@
 # MusicBoxMaker
 
-This code allows to generate the GCODE for custom music box cylinder.
-Please check the video first : (soon)
+This code allows to generate the GCODE for custom music box cylinder.  
+Please check the video first :  
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/Hx4FuogXTyk/0.jpg)](http://www.youtube.com/watch?v=Hx4FuogXTyk "Custom music box with 3D printed cylinder")
 
 The main part of the code is in the file musicBoxMaker.py which contains the cylinder generation and partition loading.
 To generate a STL or GCODE, you should adapt and execute cylinderGeneratorSTL.py or cylinderGeneratorGCODE.py
